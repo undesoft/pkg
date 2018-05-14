@@ -29,15 +29,16 @@ func Execute(method string, params map[string]string) (res *simplejson.Json, err
 		return
 	}
 	params["method"] = method
-	req, err := http.NewRequest("POST", Router, strings.NewReader(getRequestData(params)))
+	var req *http.Request
+	req, err = http.NewRequest("POST", Router, strings.NewReader(getRequestData(params)))
 	if err != nil {
 		return
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
 	httpclient := &http.Client{}
 	httpclient.Timeout = time.Second * 3
-
-	response, err := httpclient.Do(req)
+	var response *http.Response
+	response, err = httpclient.Do(req)
 	if err != nil {
 		return
 	}
@@ -46,7 +47,8 @@ func Execute(method string, params map[string]string) (res *simplejson.Json, err
 		err = fmt.Errorf("请求错误:%d", response.StatusCode)
 		return
 	}
-	body, err := ioutil.ReadAll(response.Body)
+	var body []byte
+	body, err = ioutil.ReadAll(response.Body)
 	if err != nil {
 		return
 	}
