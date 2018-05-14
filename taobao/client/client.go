@@ -61,6 +61,43 @@ func Execute(method string, params map[string]string) (res *simplejson.Json, err
 	return
 }
 
+// 检查配置
+func checkConfig() error {
+	if AppKey == "" {
+		return errors.New("AppKey 不能为空")
+	}
+	if AppSecret == "" {
+		return errors.New("AppSecret 不能为空")
+	}
+	if Router == "" {
+		return errors.New("Router 不能为空")
+	}
+	return nil
+}
+
+// 获取请求数据
+func getRequestData(params map[string]string) string {
+	// 公共参数
+	args := url.Values{}
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		panic("时区错误")
+	}
+	args.Add("timestamp", strconv.FormatInt(time.Now().In(loc).Unix(), 10))
+	args.Add("format", "json")
+	args.Add("app_key", AppKey)
+	args.Add("v", "2.0")
+	args.Add("sign_method", "md5")
+	args.Add("partner_id", "Undesoft")
+	// 请求参数
+	for key, val := range params {
+		args.Set(key, val)
+	}
+	// 设置签名
+	args.Add("sign", getSign(args))
+	return args.Encode()
+}
+
 // 获取签名
 func getSign(args url.Values) string {
 	// 获取Key
@@ -80,37 +117,4 @@ func getSign(args url.Values) string {
 	signBytes := md5.Sum([]byte(query))
 	// 把二进制转化为大写的十六进制
 	return strings.ToUpper(hex.EncodeToString(signBytes[:]))
-}
-
-// 检查配置
-func checkConfig() error {
-	if AppKey == "" {
-		return errors.New("AppKey 不能为空")
-	}
-	if AppSecret == "" {
-		return errors.New("AppSecret 不能为空")
-	}
-	if Router == "" {
-		return errors.New("Router 不能为空")
-	}
-	return nil
-}
-
-// 获取请求数据
-func getRequestData(params map[string]string) string {
-	// 公共参数
-	args := url.Values{}
-	args.Add("timestamp", strconv.FormatInt(time.Now().Unix(), 10))
-	args.Add("format", "json")
-	args.Add("app_key", AppKey)
-	args.Add("v", "2.0")
-	args.Add("sign_method", "md5")
-	args.Add("partner_id", "Undesoft")
-	// 请求参数
-	for key, val := range params {
-		args.Set(key, val)
-	}
-	// 设置签名
-	args.Add("sign", getSign(args))
-	return args.Encode()
 }
