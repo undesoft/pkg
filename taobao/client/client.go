@@ -81,11 +81,9 @@ func checkConfig() error {
 func getRequestData(params map[string]string) string {
 	// 公共参数
 	args := url.Values{}
-	loc, err := time.LoadLocation("Asia/Shanghai")
-	if err != nil {
-		panic("时区错误")
-	}
-	args.Add("timestamp", strconv.FormatInt(time.Now().In(loc).Unix(), 10))
+	hh, _ := time.ParseDuration("8h")
+	loc := time.Now().UTC().Add(hh)
+	args.Add("timestamp", strconv.FormatInt(loc.Unix(), 10))
 	args.Add("format", "json")
 	args.Add("app_key", AppKey)
 	args.Add("v", "2.0")
