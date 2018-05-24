@@ -17,9 +17,9 @@ func TestExecute(t *testing.T) {
 		"js_code":    "登录时获取的 code",
 		"grant_type": "authorization_code",
 	}
-	result, err := Execute(url, args)
+	json, err := Execute(url, args)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(result)
+	fmt.Println(json)
 }

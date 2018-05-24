@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Undesoft/pkg/net/http"
+	simplejson "github.com/bitly/go-simplejson"
 )
 
 var (
@@ -11,14 +12,23 @@ var (
 	AppSecret = ""
 )
 
-func Execute(url string, args map[string]string) (result string, err error) {
+func Execute(url string, args map[string]string) (json *simplejson.Json, err error) {
 	err = checkConfig()
 	if err != nil {
 		return
 	}
 	args["appid"] = AppId
 	args["secret"] = AppSecret
-	return http.Get(url, args)
+
+	result, err := http.Get(url, args)
+	if err != nil {
+		return
+	}
+	json, err = simplejson.NewJson([]byte(result))
+	if err != nil {
+		return
+	}
+	return
 }
 
 func checkConfig() error {
