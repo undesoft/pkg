@@ -28,8 +28,9 @@ func Execute(url string, args map[string]string) (json *simplejson.Json, err err
 	if err != nil {
 		return
 	}
-	if errmsg, ok := json.CheckGet("errmsg"); ok {
-		err = errors.New("执行错误:" + errmsg.MustString())
+	if errmsg, ok := json.CheckGet("errcode"); ok {
+		bytes, _ := errmsg.Encode()
+		err = errors.New(string(bytes))
 		return
 	}
 	return
