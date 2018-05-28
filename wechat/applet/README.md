@@ -1,3 +1,5 @@
+# Example 🌰
+```go
 package applet
 
 import (
@@ -23,3 +25,5 @@ func TestExecute(t *testing.T) {
 	}
 	fmt.Println(json)
 }
+
+```

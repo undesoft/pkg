@@ -17,20 +17,26 @@ import (
 )
 
 var (
-	AppKey    string = ""
-	AppSecret string = ""
-	Router    string = ""
+	// AppKey 应用Key
+	AppKey string
+	// AppSecret 秘密
+	AppSecret string
+	// Router 环境请求地址
+	Router string
 )
 
-// 执行API接口
-func Execute(method string, params map[string]string) (res *simplejson.Json, err error) {
+// Parameter 参数
+type Parameter map[string]string
+
+//Execute 执行API接口
+func Execute(method string, param Parameter) (res *simplejson.Json, err error) {
 	err = checkConfig()
 	if err != nil {
 		return
 	}
-	params["method"] = method
+	param["method"] = method
 	var req *http.Request
-	req, err = http.NewRequest("POST", Router, strings.NewReader(getRequestData(params)))
+	req, err = http.NewRequest("POST", Router, strings.NewReader(param.getRequestData()))
 	if err != nil {
 		return
 	}
@@ -78,7 +84,7 @@ func checkConfig() error {
 }
 
 // 获取请求数据
-func getRequestData(params map[string]string) string {
+func (p *Parameter) getRequestData() string {
 	// 公共参数
 	args := url.Values{}
 	hh, _ := time.ParseDuration("8h")
@@ -90,7 +96,7 @@ func getRequestData(params map[string]string) string {
 	args.Add("sign_method", "md5")
 	args.Add("partner_id", "Undesoft")
 	// 请求参数
-	for key, val := range params {
+	for key, val := range *p {
 		args.Set(key, val)
 	}
 	// 设置签名

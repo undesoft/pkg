@@ -8,19 +8,25 @@ import (
 )
 
 var (
-	AppId     = ""
+	// AppID 应用Key
+	AppID = ""
+	// AppSecret 秘密
 	AppSecret = ""
 )
 
-func Execute(url string, args map[string]string) (json *simplejson.Json, err error) {
+// Parameter 参数
+type Parameter map[string]string
+
+// Execute 执行
+func Execute(url string, param Parameter) (json *simplejson.Json, err error) {
 	err = checkConfig()
 	if err != nil {
 		return
 	}
-	args["appid"] = AppId
-	args["secret"] = AppSecret
+	param["appid"] = AppID
+	param["secret"] = AppSecret
 
-	result, err := http.Get(url, args)
+	result, err := http.Get(url, param)
 	if err != nil {
 		return
 	}
@@ -37,8 +43,8 @@ func Execute(url string, args map[string]string) (json *simplejson.Json, err err
 }
 
 func checkConfig() error {
-	if AppId == "" {
-		return errors.New("AppKey 不能为空")
+	if AppID == "" {
+		return errors.New("AppID 不能为空")
 	}
 	if AppSecret == "" {
 		return errors.New("AppSecret 不能为空")

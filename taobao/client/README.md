@@ -15,7 +15,7 @@ func init() {
 }
 
 func main() {
-	res, err := tbclient.Execute("taobao.tbk.item.get", map[string]string{
+	res, err := tbclient.Execute("taobao.tbk.item.get", tbclient.Parameter{
 		"fields": "num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick",
 		"q":      "女装",
 		"cat":    "16,18",

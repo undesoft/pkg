@@ -12,7 +12,7 @@ func init() {
 }
 func TestExecute(t *testing.T) {
 	// http://open.taobao.com/docs/api.htm?apiId=24515
-	res, err := Execute("taobao.tbk.item.get", map[string]string{
+	res, err := Execute("taobao.tbk.item.get", Parameter{
 		"fields": "num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick",
 		"q":      "女装",
 		"cat":    "16,18",
